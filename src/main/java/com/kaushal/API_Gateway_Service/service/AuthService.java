@@ -1,6 +1,7 @@
 package com.kaushal.API_Gateway_Service.service;
 
 import com.kaushal.API_Gateway_Service.dto.LoginRequest;
+import com.kaushal.API_Gateway_Service.dto.SignupRequest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,6 +26,19 @@ public class AuthService {
                 .bodyToMono(String.class);
     }
 
+    public Mono<String> signupUser(String email, String password,
+                                   String firstName, String lastName,
+                                   String gender, String dob, String phoneNum,
+                                   String userImage) {
+        return webClient.post()
+                .uri("/user/signup")
+                .bodyValue(new SignupRequest(email, password,
+                        firstName, lastName, gender,
+                        dob, phoneNum, userImage))
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
     public Mono<HashMap<String, String>> getCurrentUser(String token) {
         return webClient.get()
                 .uri("/user/user-info")
@@ -43,6 +57,19 @@ public class AuthService {
                 .header("userID", userID)  // ✅ Pass userID in a header
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<>() {
+                });
+    }
+
+    public Mono<Boolean> checkTokenValidity(String token, String email) {
+        System.out.println("Token Validity Check Begin...");
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/user/check-token-validity")
+                        .queryParam("email", email)
+                        .build())
+                .header("Authorization", "Bearer " + token)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Boolean>() {
                 });
     }
 }
