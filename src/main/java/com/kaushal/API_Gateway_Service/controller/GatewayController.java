@@ -1,9 +1,6 @@
 package com.kaushal.API_Gateway_Service.controller;
 
-import com.kaushal.API_Gateway_Service.dto.Like;
-import com.kaushal.API_Gateway_Service.dto.LoginRequest;
-import com.kaushal.API_Gateway_Service.dto.Post;
-import com.kaushal.API_Gateway_Service.dto.SignupRequest;
+import com.kaushal.API_Gateway_Service.dto.*;
 import com.kaushal.API_Gateway_Service.service.AuthService;
 import com.kaushal.API_Gateway_Service.service.LikeCommentService;
 import com.kaushal.API_Gateway_Service.service.PostService;
@@ -179,5 +176,57 @@ public class GatewayController {
                 .defaultIfEmpty(ResponseEntity.status(400).body("Bad Request."));
     }
 
+    @PostMapping("/delete-like")
+    public Mono<ResponseEntity<String>> deleteLike(@RequestBody DeleteLike deleteLikeRequest) {
+        return likeCommentService.deleteLike(deleteLikeRequest.getToken(),
+                                            deleteLikeRequest.getEmail(),
+                                            deleteLikeRequest.getLikeID())
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(400).body("Bad Request."));
+    }
+
+    @GetMapping("/count-likes")
+    public Mono<ResponseEntity<LikeResponse>> countLikes(@RequestHeader String postID) {
+        return likeCommentService.countLikes(postID)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(400)
+                        .body(new LikeResponse("Failed to retrieve likes", 0, null)));
+    }
+
+    @PostMapping("/post-comment")
+    public Mono<ResponseEntity<String>> postComment(@RequestBody Comment commentRequest) {
+        return likeCommentService.postComment(commentRequest.getToken(), commentRequest.getEmail(),
+                                            commentRequest.getCommentTxt(), commentRequest.getPostID(),
+                                            commentRequest.getUserID())
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(400).body("Bad Request."));
+    }
+
+    @PostMapping("/edit-comment")
+    public Mono<ResponseEntity<String>> editComment(@RequestBody CommentEdit editRequest) {
+        return likeCommentService.editComment(editRequest.getToken(), editRequest.getEmail(),
+                                            editRequest.getPostID(), editRequest.getUserID(),
+                                            editRequest.getCommentID(), editRequest.getUpdatedComment())
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(400).body("Bad Request."));
+    }
+
+    @PostMapping("/delete-comment")
+    public Mono<ResponseEntity<String>> deleteComment(@RequestBody CommentDelete editRequest) {
+        return likeCommentService
+                .deleteComment(editRequest.getToken(),
+                        editRequest.getEmail(),
+                        editRequest.getCommentID())
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(400).body("Bad Request."));
+    }
+
+    @GetMapping("/count-comments")
+    public Mono<ResponseEntity<CommentResponse>> countComments(@RequestHeader String postID) {
+        return likeCommentService.countComments(postID)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(400)
+                        .body(new CommentResponse("Failed to retrieve comments", 0, null)));
+    }
 
 }
