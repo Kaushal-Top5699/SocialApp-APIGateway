@@ -1,9 +1,11 @@
 package com.kaushal.API_Gateway_Service.controller;
 
+import com.kaushal.API_Gateway_Service.dto.Like;
 import com.kaushal.API_Gateway_Service.dto.LoginRequest;
 import com.kaushal.API_Gateway_Service.dto.Post;
 import com.kaushal.API_Gateway_Service.dto.SignupRequest;
 import com.kaushal.API_Gateway_Service.service.AuthService;
+import com.kaushal.API_Gateway_Service.service.LikeCommentService;
 import com.kaushal.API_Gateway_Service.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,9 @@ public class GatewayController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private LikeCommentService likeCommentService;
 
     /* USER AUTH ROUTES START */
     @PostMapping("/login")
@@ -164,4 +169,15 @@ public class GatewayController {
     }
 
     /* POST ROUTES END */
+
+    /* LIKE-COMMENT ROUTES START */
+
+    @PostMapping("/post-like")
+    public Mono<ResponseEntity<String>> postLike(@RequestBody Like like) {
+        return likeCommentService.createNewLike(like.getToken(), like.getEmail(), like.getPostID(), like.getUserID())
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.status(400).body("Bad Request."));
+    }
+
+
 }
