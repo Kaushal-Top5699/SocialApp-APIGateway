@@ -229,4 +229,5 @@ public class GatewayController {
                         .body(new CommentResponse("Failed to retrieve comments", 0, null)));
     }
 
+    /* LIKE-COMMENT ROUTES END */
 }
