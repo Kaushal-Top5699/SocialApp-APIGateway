@@ -18,6 +18,8 @@ public class AuthService {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8080/").build();
     }
 
+    /* AUTH API CALLS START */
+
     public Mono<String> loginUser(String email, String password) {
         return webClient.post()
                 .uri("/user/login")
@@ -72,4 +74,6 @@ public class AuthService {
                 .bodyToMono(new ParameterizedTypeReference<Boolean>() {
                 });
     }
+
+    /* AUTH API CALLS END */
 }

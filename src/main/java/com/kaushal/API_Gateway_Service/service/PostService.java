@@ -17,6 +17,8 @@ public class PostService {
         this.webClient = webClientBuilder.baseUrl("http://localhost:8082/").build();
     }
 
+    /* POST API CALLS START */
+
     public Mono<List<Post>> getAllPosts(String token, String email) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -79,4 +81,6 @@ public class PostService {
                 .retrieve()
                 .bodyToMono(String.class);
     }
+
+    /* POST API CALLS END */
 }
