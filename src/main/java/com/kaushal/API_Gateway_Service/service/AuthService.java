@@ -19,7 +19,6 @@ public class AuthService {
     }
 
     /* AUTH API CALLS START */
-    /* AUTH API CALLS START */
 
     public Mono<String> loginUser(String email, String password) {
         return webClient.post()
@@ -76,6 +75,5 @@ public class AuthService {
                 });
     }
 
-    /* AUTH API CALLS END */
     /* AUTH API CALLS END */
 }
